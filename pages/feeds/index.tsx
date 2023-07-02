@@ -97,12 +97,16 @@ const Page: NextPageWithLayout = () => {
                           </p>
                         ))}
                       </div>
-                      <h2 className="font-semibold md:text-2xl">
+                      <h2 className="font-semibold md:text-2xl mb-6">
                         {feed.title}
                       </h2>
                       <div className="flex gap-x-3">
-                        <p>{feed.author.name}</p>
-                        <p>{convertDate(feed.createdAt)}</p>
+                        <p className="text-sm lg:text-base">
+                          {feed.author.name}
+                        </p>
+                        <p className="text-sm lg:text-base">
+                          {convertDate(feed.createdAt)}
+                        </p>
                       </div>
                     </div>
                   </div>
