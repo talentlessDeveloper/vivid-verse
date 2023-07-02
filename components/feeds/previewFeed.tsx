@@ -5,6 +5,7 @@ import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
 
 import { CreateFeed } from '@/constant/validation/types';
+import Image from 'next/image';
 
 export type PreviewFeedProps = CreateFeed & { content: string };
 
@@ -13,10 +14,12 @@ const PreviewFeed = ({ content, ...feed }: PreviewFeedProps) => {
   return (
     <div className="w-full rounded-md min-h-[480px] shadow-sm border border-solid border-slate-300 bg-white pt-8 pb-10 px-4">
       <div>
-        <img
-          src={image ? image : imageUrl}
+        <Image
+          src={image ? image : (imageUrl as string)}
           alt=""
           className="w-full  object-cover h-52 lg:h-96"
+          width="0"
+          height="0"
         />
         <div className="flex gap-x-2">
           {tags.map((tag, i) => (
