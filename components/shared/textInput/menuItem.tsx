@@ -17,6 +17,7 @@ function MenuItem({ value, selected, onSelect, children }: MenuItemProps) {
       className={`px-4 py-2 text-sm ${
         selected ? 'bg-indigo-500 text-white' : ''
       }`}
+      // eslint-disable-next-line jsx-a11y/role-has-required-aria-props
       role="option"
       onClick={handleClick}
     >
