@@ -1,7 +1,7 @@
-import { CreateFeed } from '@/constant/validation/types';
-import { auth, db } from './config';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { PreviewFeedProps } from '@/components/feeds/previewFeed';
+import { addDoc, serverTimestamp } from 'firebase/firestore';
+import { auth } from './config';
+import { feedCol } from './typedCollections';
 
 export const createFeed = async (feed: PreviewFeedProps) => {
   let imageUrl;
@@ -13,8 +13,8 @@ export const createFeed = async (feed: PreviewFeedProps) => {
   }
   const { currentUser } = auth;
   try {
-    const collectionRef = collection(db, 'Feeds');
-    const post = {
+    const collectionRef = feedCol;
+    const feedData = {
       title: feed.title,
       content: feed.content,
       author: {
@@ -26,9 +26,9 @@ export const createFeed = async (feed: PreviewFeedProps) => {
       imageUrl,
     };
 
-    console.log(post);
+    console.log(feedData);
 
-    await addDoc(collectionRef, post);
+    await addDoc(collectionRef, feedData);
 
     return { error: null };
   } catch (err: any) {
