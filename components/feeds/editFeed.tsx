@@ -25,7 +25,7 @@ const EditFeed = () => {
 
   useEffect(() => {
     const getPost = async () => {
-      if (!id) {
+      if (id) {
         try {
           const feedRef = feedCol;
           const docId = id as string;
@@ -46,7 +46,7 @@ const EditFeed = () => {
     getPost();
   }, [id]);
 
-  if (loading || !id)
+  if (loading)
     return (
       <div className="flex h-screen justify-center items-center">
         <Loader size="w-10 h-10" />
