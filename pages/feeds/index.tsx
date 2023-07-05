@@ -1,20 +1,22 @@
-import Feed from '@/components/feeds/feed';
 import VerifiedAuthLayout from '@/components/shared/verifiedAuthLayout';
+import Loader from '@/components/svg/loader';
+import { CreateFeed, Feed } from '@/constant/validation/types';
+import { db } from '@/firebase/config';
+import {
+  collection,
+  doc,
+  getDocs,
+  orderBy,
+  query,
+  updateDoc,
+} from 'firebase/firestore';
 import { ReactElement, useEffect, useState } from 'react';
 import { NextPageWithLayout } from '../_app';
-import { collection, getDocs, orderBy, query } from 'firebase/firestore';
-import { db } from '@/firebase/config';
-import { convertDate } from '@/utils/convertDate';
-import Link from 'next/link';
-import { PreviewFeedProps } from '@/components/feeds/previewFeed';
-import Loader from '@/components/svg/loader';
-import { CreateFeed } from '@/constant/validation/types';
-import Image from 'next/image';
-
-type Feed = CreateFeed & { id: string; content: string };
+import SingleFeed from '@/components/feeds/feed';
+import { feedCol } from '@/firebase/typedCollections';
 
 const Page: NextPageWithLayout = () => {
-  const [feeds, setFeeds] = useState<any>([]);
+  const [feeds, setFeeds] = useState<Feed[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -28,7 +30,7 @@ const Page: NextPageWithLayout = () => {
         //   // doc.data() is never undefined for query doc snapshots
         //   console.log(doc.id, ' => ', doc.data());
         // });
-        const feedsRef = collection(db, 'Feeds');
+        const feedsRef = feedCol;
         const q = query(feedsRef, orderBy('createdAt', 'desc'));
         const feedsCollection = await getDocs(q);
         const feedsData = feedsCollection.docs.map((feed) => {
@@ -55,6 +57,45 @@ const Page: NextPageWithLayout = () => {
       </div>
     );
 
+  const bookmarksFn = async (documentId: string, userId: string) => {
+    const newFeeds = feeds.map((feed) => {
+      if (feed.id === documentId) {
+        const alreadyBookmarked = feed.bookMarkedBy?.includes(userId);
+        if (alreadyBookmarked) {
+          // Remove user ID from array
+          const updatedBookmarks = feed.bookMarkedBy?.filter(
+            (uid) => uid !== userId
+          );
+          const updatedFeed = { ...feed, bookMarkedBy: updatedBookmarks };
+          return updatedFeed;
+        } else {
+          const updatedBookmarks = [...(feed.bookMarkedBy || []), userId];
+          const updatedFeed = { ...feed, bookMarkedBy: updatedBookmarks };
+          return updatedFeed;
+        }
+      } else {
+        return feed;
+      }
+    });
+
+    setFeeds(newFeeds);
+
+    try {
+      const documentRef = doc(feedCol, documentId);
+      //  await documentRef.update({ bookMarkedBy: newFeed.bookMarkedBy });
+      for (let newFeed of newFeeds) {
+        if (newFeed.id === documentId) {
+          await updateDoc(documentRef, newFeed);
+          return;
+        }
+      }
+
+      console.log('Successfully updated the document in Firestore');
+    } catch (error) {
+      console.error('Error updating the document in Firestore:', error);
+    }
+  };
+
   return (
     <section>
       <div className="w-10/12 mx-auto">
@@ -62,56 +103,14 @@ const Page: NextPageWithLayout = () => {
           <div>You have {feeds.length} Posts</div>
         ) : ( */}
         <div>
-          {feeds.map((feed: any) => {
+          {feeds.map((feed) => {
             return (
-              <Link
+              <SingleFeed
                 key={feed.id}
-                href={`feed/${encodeURIComponent(feed.id)}`}
-                // href={{
-                //   pathname: '/feed/[id]',
-                //   query: { slug: feed.id },
-                // }}
-              >
-                <div className="shadow-md text-lg font-mono py-3 px-2 mt-2 space-y-2">
-                  <div>
-                    <div className="w-full">
-                      {feed.imageUrl ? (
-                        <Image
-                          src={feed.imageUrl}
-                          alt=""
-                          className="w-full h-40 lg:h-[400px]  object-cover"
-                          width="0"
-                          height="0"
-                          unoptimized
-                        />
-                      ) : null}
-                    </div>
-                    <div className="flex-grow">
-                      <div className="flex gap-x-2 py-3">
-                        {feed.tags.map((tag: string[], i: any) => (
-                          <p
-                            key={`p-${tag}-${i}`}
-                            className="text-base text-blue-600 mt-2"
-                          >
-                            #{tag}
-                          </p>
-                        ))}
-                      </div>
-                      <h2 className="font-semibold md:text-2xl mb-6">
-                        {feed.title}
-                      </h2>
-                      <div className="flex gap-x-3">
-                        <p className="text-sm lg:text-base">
-                          {feed.author.name}
-                        </p>
-                        <p className="text-sm lg:text-base">
-                          {convertDate(feed.createdAt)}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Link>
+                feed={feed}
+                setFeeds={setFeeds}
+                feeds={feeds}
+              />
             );
           })}
         </div>
