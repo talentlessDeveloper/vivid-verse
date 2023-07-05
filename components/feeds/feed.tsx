@@ -8,7 +8,7 @@ import { BsBookmark, BsBookmarkFill, BsBookmarksFill } from 'react-icons/bs';
 import SignInModal from '../comments/signInModal';
 import { bookmarksFn } from '@/firebase/bookmark';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
-import { deleteDoc, doc } from 'firebase/firestore';
+import { deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
 import { feedCol } from '@/firebase/typedCollections';
 import { toast } from 'react-toastify';
 
@@ -42,7 +42,7 @@ const SingleFeed = ({ feed, setFeeds, feeds }: FeedProp) => {
       toast.error("Couldn't delete Feed");
     }
   };
-
+  console.log(serverTimestamp());
   return (
     <>
       <div>
@@ -84,7 +84,7 @@ const SingleFeed = ({ feed, setFeeds, feeds }: FeedProp) => {
                 <div className="flex gap-x-3">
                   <p className="text-sm lg:text-base">{feed.author.name}</p>
                   <p className="text-sm lg:text-base">
-                    {convertDate(feed.createdAt)}
+                    {convertDate(feed?.createdAt!)}
                   </p>
                 </div>
                 <div className="flex gap-x-3 pr-2 lg:pr-10">
