@@ -56,7 +56,7 @@ export type Feed = {
   title: string;
   content: string;
   imageUrl: string;
-  createdAt: Timestamp;
+  createdAt?: Timestamp;
   author: Author;
   comments: IComment[];
   tags: string[];
