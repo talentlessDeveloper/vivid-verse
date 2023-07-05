@@ -2,6 +2,24 @@ import { auth } from '@/firebase/config';
 import { convertDate } from '@/utils/convertDate';
 import CommentForm from './commentForm';
 import Image from 'next/image';
+import { ActiveComment } from '../feeds/feedPage';
+import { Author, IComment } from '@/constant/validation/types';
+import { Timestamp } from 'firebase/firestore';
+import { useAuth } from '@/hooks/useAuth';
+
+type CommentProps = {
+  author: Author;
+  body: string;
+  createdAt: Timestamp;
+  id: string;
+  replies: IComment[];
+  activeComment: ActiveComment | null;
+  setActiveComment: React.Dispatch<React.SetStateAction<ActiveComment | null>>;
+  addComment: (text: string, parentId: string | null) => Promise<void>;
+  updateComment: (text: string, commentId: string) => Promise<void>;
+  deleteComment: (commentId: string) => Promise<void>;
+  parentId?: null | string;
+};
 
 const Comment = ({
   author,
@@ -15,7 +33,7 @@ const Comment = ({
   updateComment,
   deleteComment,
   parentId = null,
-}: any) => {
+}: CommentProps) => {
   const { currentUser } = auth;
 
   const canReply = Boolean(currentUser?.uid);
@@ -46,11 +64,7 @@ const Comment = ({
     <div className="flex items-start my-4">
       <div className="flex-shrink-0">
         <Image
-          src={
-            currentUser?.photoURL
-              ? currentUser?.photoURL
-              : 'https://images.unsplash.com/photo-1566492031773-4f4e44671857?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGF2YXRhcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60'
-          }
+          src={currentUser?.photoURL!}
           alt="avatar"
           className="w-10 aspect-square rounded-full object-cover"
           width={0}
@@ -123,31 +137,24 @@ const Comment = ({
         )}
         {replies.length > 0 && (
           <div className="ml-8">
-            {replies.map(
-              (reply: {
-                id: string;
-                author: string;
-                body: string;
-                createdAt: Date;
-              }) => {
-                return (
-                  <Comment
-                    key={reply.id}
-                    author={reply.author}
-                    body={reply.body}
-                    id={reply.id}
-                    createdAt={reply.createdAt}
-                    replies={[]}
-                    parentId={id}
-                    addComment={addComment}
-                    updateComment={updateComment}
-                    deleteComment={deleteComment}
-                    activeComment={activeComment}
-                    setActiveComment={setActiveComment}
-                  />
-                );
-              }
-            )}
+            {replies.map((reply) => {
+              return (
+                <Comment
+                  key={reply.id}
+                  author={reply.author}
+                  body={reply.body}
+                  id={reply.id}
+                  createdAt={reply.createdAt}
+                  replies={[]}
+                  parentId={id}
+                  addComment={addComment}
+                  updateComment={updateComment}
+                  deleteComment={deleteComment}
+                  activeComment={activeComment}
+                  setActiveComment={setActiveComment}
+                />
+              );
+            })}
           </div>
         )}
       </div>
