@@ -87,7 +87,7 @@ const SingleFeed = ({ feed, setFeeds, feeds }: FeedProp) => {
                     {convertDate(feed?.createdAt!)}
                   </p>
                 </div>
-                <div className="flex gap-x-3 pr-2 lg:pr-10">
+                <div className="flex gap-x-3 items-center pr-2 lg:pr-10">
                   {feed.author.id === currentUser?.uid ? (
                     <>
                       <Link href={`edit/${encodeURIComponent(feed.id)}`}>
