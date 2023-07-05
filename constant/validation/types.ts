@@ -1,3 +1,5 @@
+import { Timestamp } from 'firebase/firestore';
+
 export type ILogin = {
   email: string;
   password: string;
@@ -27,3 +29,39 @@ export type CreateFeed = {
   imageUrl?: string;
   tags: string[];
 };
+
+export type Author = {
+  name: string;
+  id: string;
+};
+
+export type IComment = {
+  author: Author;
+  body: string;
+  createdAt: Timestamp;
+  id: string;
+  parentId?: string | null;
+};
+
+export type Reaction = {
+  eyes: number;
+  heart: number;
+  hooray: number;
+  rocket: number;
+  thumbsUp: number;
+};
+
+export type Feed = {
+  id: string;
+  title: string;
+  content: string;
+  imageUrl: string;
+  createdAt: Timestamp;
+  author: Author;
+  comments: IComment[];
+  tags: string[];
+  reactions?: Reaction;
+  bookMarkedBy?: string[];
+};
+
+export type Bookmark = Feed & { userId: string };
