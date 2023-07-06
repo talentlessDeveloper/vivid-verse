@@ -14,25 +14,6 @@ const Page = () => {
   const [loading, setLoading] = useState(true);
   const [comments, setComments] = useState<IComment[]>([]);
 
-  // {
-  //   title: "",
-  //   tags: [],
-  //   content: "",
-  //   author: {
-  //     name: "",
-  //     id: ""
-  //   },
-  //   imageUrl: "",
-  //   reactions: {
-  //     eyes: 0,
-  //     heart: 0,
-  //     hooray: 0,
-  //     thumbsUp: 0,
-  //     rocket: 0,
-  //   },
-  //   createdAt: FieldValue.serverTimestamp()
-  // }
-
   const [emojis, setEmojis] = useState<Reaction>({
     thumbsUp: 0,
     hooray: 0,
@@ -73,7 +54,7 @@ const Page = () => {
     getPost();
   }, [id]);
 
-  if (loading || !id)
+  if (loading)
     return (
       <div className="flex h-screen justify-center items-center">
         <Loader size="w-10 h-10" />
