@@ -28,7 +28,7 @@ export default function Home() {
               <div className="w-[13rem]">
                 <Link
                   href="/feeds"
-                  className="bg-slate-800 text-center font-playfair text-xl block  px-3 py-2 mt-8 w-full transition-colors duration-500 dark:hover:bg-zinc-700 dark:text-neutral-50 text-zinc-700 hover:text-neutral-50 hover:bg-zinc-700 "
+                  className="bg-slate-800 text-center font-playfair text-xl block  px-3 py-2 mt-8 w-full transition-colors duration-500 dark:hover:bg-slate-950 dark:text-neutral-50 text-zinc-700 hover:text-neutral-50 hover:bg-zinc-700 "
                 >
                   Get Started
                 </Link>
