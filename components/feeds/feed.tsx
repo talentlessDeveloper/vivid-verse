@@ -11,6 +11,7 @@ import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 import { deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
 import { feedCol } from '@/firebase/typedCollections';
 import { toast } from 'react-toastify';
+import { useAuth } from '@/hooks/useAuth';
 
 type FeedProp = {
   feed: Feed;
@@ -21,13 +22,13 @@ type FeedProp = {
 
 const SingleFeed = ({ feed, setFeeds, feeds }: FeedProp) => {
   const [modal, setModal] = useState(false);
-  const { currentUser } = auth;
+  const { user } = useAuth();
   const handleBookMark = async () => {
-    if (!currentUser) {
+    if (!user) {
       setModal(true);
       return;
     }
-    await bookmarksFn(feed.id, currentUser.uid, feeds, setFeeds);
+    await bookmarksFn(feed.id, user.uid, feeds, setFeeds);
   };
 
   const closeModal = () => setModal(false);
@@ -88,7 +89,7 @@ const SingleFeed = ({ feed, setFeeds, feeds }: FeedProp) => {
                   </p>
                 </div>
                 <div className="flex gap-x-3 items-center pr-2 lg:pr-10">
-                  {feed.author.id === currentUser?.uid ? (
+                  {feed.author.id === user?.uid ? (
                     <>
                       <Link href={`edit/${encodeURIComponent(feed.id)}`}>
                         <AiOutlineEdit />
@@ -101,7 +102,7 @@ const SingleFeed = ({ feed, setFeeds, feeds }: FeedProp) => {
                   <button onClick={handleBookMark}>
                     <BsBookmark
                       className={
-                        feed.bookMarkedBy?.includes(currentUser?.uid!)
+                        feed.bookMarkedBy?.includes(user?.uid!)
                           ? 'fill-yellow-400'
                           : ''
                       }
