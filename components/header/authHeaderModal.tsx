@@ -64,7 +64,7 @@ const AuthHeaderModal = ({
           </Link>
         </li>
         <li className="px-4 hover:bg-slate-100 transition-colors duration-300 py-4">
-          <Link href="/account" className="flex gap-x-5 items-center">
+          <Link href="/settings" className="flex gap-x-5 items-center">
             <MdOutlineAccountCircle />
             <span>Account Settings</span>
           </Link>
