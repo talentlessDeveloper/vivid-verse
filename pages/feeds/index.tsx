@@ -14,6 +14,7 @@ import { ReactElement, useEffect, useState } from 'react';
 import { NextPageWithLayout } from '../_app';
 import SingleFeed from '@/components/feeds/feed';
 import { feedCol } from '@/firebase/typedCollections';
+import Link from 'next/link';
 
 const Page: NextPageWithLayout = () => {
   const [feeds, setFeeds] = useState<Feed[]>([]);
@@ -50,71 +51,40 @@ const Page: NextPageWithLayout = () => {
     getFeeds();
   }, []);
 
-  if (loading || feeds.length <= 0)
+  if (loading)
     return (
       <div className="flex fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
         <Loader size="w-10 h-10" />
       </div>
     );
 
-  const bookmarksFn = async (documentId: string, userId: string) => {
-    const newFeeds = feeds.map((feed) => {
-      if (feed.id === documentId) {
-        const alreadyBookmarked = feed.bookMarkedBy?.includes(userId);
-        if (alreadyBookmarked) {
-          // Remove user ID from array
-          const updatedBookmarks = feed.bookMarkedBy?.filter(
-            (uid) => uid !== userId
-          );
-          const updatedFeed = { ...feed, bookMarkedBy: updatedBookmarks };
-          return updatedFeed;
-        } else {
-          const updatedBookmarks = [...(feed.bookMarkedBy || []), userId];
-          const updatedFeed = { ...feed, bookMarkedBy: updatedBookmarks };
-          return updatedFeed;
-        }
-      } else {
-        return feed;
-      }
-    });
-
-    setFeeds(newFeeds);
-
-    try {
-      const documentRef = doc(feedCol, documentId);
-      //  await documentRef.update({ bookMarkedBy: newFeed.bookMarkedBy });
-      for (let newFeed of newFeeds) {
-        if (newFeed.id === documentId) {
-          await updateDoc(documentRef, newFeed);
-          return;
-        }
-      }
-
-      console.log('Successfully updated the document in Firestore');
-    } catch (error) {
-      console.error('Error updating the document in Firestore:', error);
-    }
-  };
-
   return (
     <section>
       <div className="w-10/12 mx-auto">
-        {/* {!feeds.length ? (
-          <div>You have {feeds.length} Posts</div>
-        ) : ( */}
-        <div>
-          {feeds.map((feed) => {
-            return (
-              <SingleFeed
-                key={feed.id}
-                feed={feed}
-                setFeeds={setFeeds}
-                feeds={feeds}
-              />
-            );
-          })}
-        </div>
-        {/* )} */}
+        {feeds.length <= 0 ? (
+          <div className="h-[90dvh] flex justify-center items-center">
+            There are 0 feeds for you, you can{' '}
+            <Link
+              href="/create"
+              className="inline-block ml-3 text-slate-50 px-6 py-1 bg-slate-800 hover:bg-slate-900 transition-all text-lg"
+            >
+              create one
+            </Link>
+          </div>
+        ) : (
+          <div>
+            {feeds.map((feed) => {
+              return (
+                <SingleFeed
+                  key={feed.id}
+                  feed={feed}
+                  setFeeds={setFeeds}
+                  feeds={feeds}
+                />
+              );
+            })}
+          </div>
+        )}
       </div>
     </section>
   );

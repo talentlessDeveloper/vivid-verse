@@ -3,8 +3,7 @@ import { useRouter } from 'next/router';
 import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
 import { v4 } from 'uuid';
 import { getAuth } from 'firebase/auth';
-import { db } from '@/firebase/config';
-import { doc, updateDoc } from '@firebase/firestore';
+import { doc, updateDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
 
 import Image from 'next/image';
 
@@ -20,7 +19,7 @@ import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
 import remarkGfm from 'remark-gfm';
 import { IComment, Feed, Reaction } from '@/constant/validation/types';
-import { Timestamp } from 'firebase/firestore';
+
 import { feedCol } from '@/firebase/typedCollections';
 
 type FeedPageProps = {
@@ -57,41 +56,34 @@ const FeedPage = ({
     (comment: any) => comment.parentId === null
   );
 
-  const addComment = async (text: string, parentId: string | null) => {
+  const addComment = async (text: string, parentId: string | null = null) => {
     const commentData = {
       id: v4(),
       author: {
         name: currentUser?.displayName!,
         id: currentUser?.uid!,
+        profilePic: currentUser?.photoURL!,
       },
       createdAt: Timestamp.now(),
       body: text,
       parentId,
     };
+    console.log(commentData);
 
     const commentsData = [commentData, ...comments];
     const feedData = {
       ...feed,
-      comments: [...commentsData],
+      comments: [...comments, commentData],
     };
-
-    console.log(feedData);
-
-    // const collectionRef = db.collection("documents");
-
-    // collectionRef.onSnapshot((snapshot) => {
-    //   // Do something with the snapshot.
-    // });
 
     try {
       const docId = id;
       const feedRef = doc(feedCol, docId);
+
       await updateDoc(feedRef, feedData);
-      // onSnapshot(feedRef, (snapshot) => {
-      //   console.log(snapshot.data());
-      // });
 
       setComments(commentsData);
+      console.log(commentsData);
     } catch (e: any) {
       console.log(e.message);
     }

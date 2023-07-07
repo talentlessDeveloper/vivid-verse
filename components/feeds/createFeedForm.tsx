@@ -63,7 +63,7 @@ const CreateFeedForm = ({
     setFeed((prev) => ({
       ...prev,
       image: url,
-      url: '',
+      imageUrl: '',
     }));
     // reader.onload = () => {
     //   const url = reader.result;
@@ -79,7 +79,7 @@ const CreateFeedForm = ({
     setFeed((prev) => ({
       ...prev,
       imageUrl: e.target.value,
-      image: null,
+      image: '',
     }));
   };
 

@@ -1,4 +1,5 @@
 import SingleFeed from '@/components/feeds/feed';
+import ProtectedRoute from '@/components/shared/protectedRoute';
 import VerifiedAuthLayout from '@/components/shared/verifiedAuthLayout';
 import Loader from '@/components/svg/loader';
 import { Feed } from '@/constant/validation/types';
@@ -47,26 +48,28 @@ const Page = () => {
     );
 
   return (
-    <section>
-      <div className="w-10/12 mx-auto">
-        {!bookMarkedFeeds.length ? (
-          <div>You have {bookMarkedFeeds.length} Posts</div>
-        ) : (
-          <div>
-            {bookMarkedFeeds.map((feed) => {
-              return (
-                <SingleFeed
-                  key={feed.id}
-                  feed={feed}
-                  feeds={bookMarkedFeeds}
-                  setFeeds={setBookMarkedFeeds}
-                />
-              );
-            })}
-          </div>
-        )}
-      </div>
-    </section>
+    <ProtectedRoute>
+      <section>
+        <div className="w-10/12 mx-auto">
+          {!bookMarkedFeeds.length ? (
+            <div>You have {bookMarkedFeeds.length} Posts</div>
+          ) : (
+            <div>
+              {bookMarkedFeeds.map((feed) => {
+                return (
+                  <SingleFeed
+                    key={feed.id}
+                    feed={feed}
+                    feeds={bookMarkedFeeds}
+                    setFeeds={setBookMarkedFeeds}
+                  />
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </section>
+    </ProtectedRoute>
   );
 };
 

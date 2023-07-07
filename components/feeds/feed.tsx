@@ -33,7 +33,6 @@ const SingleFeed = ({ feed, setFeeds, feeds }: FeedProp) => {
 
   const closeModal = () => setModal(false);
   const deleteFeed = async () => {
-    console.log('delete');
     try {
       await deleteDoc(doc(feedCol, feed.id));
       toast.success('Feed Deleted SuccessFully');
@@ -43,7 +42,7 @@ const SingleFeed = ({ feed, setFeeds, feeds }: FeedProp) => {
       toast.error("Couldn't delete Feed");
     }
   };
-  console.log(serverTimestamp());
+
   return (
     <>
       <div>
@@ -82,8 +81,24 @@ const SingleFeed = ({ feed, setFeeds, feeds }: FeedProp) => {
               </div>
               <h2 className="font-semibold md:text-2xl mb-6">{feed.title}</h2>
               <div className="flex justify-between">
-                <div className="flex gap-x-3">
-                  <p className="text-sm lg:text-base">{feed.author.name}</p>
+                <div className="flex flex-col gap-3 items-center">
+                  <div className="flex gap-x-1 items-center">
+                    <div className="w-10 h-10 rounded-full border border-solid border-gray-400">
+                      <Image
+                        alt={feed.author.name}
+                        src={feed.author.profilePic}
+                        width="0"
+                        height="0"
+                        className="w-10 h-10 object-cover rounded-full"
+                        unoptimized
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <p className="text-xs">createdBy</p>
+                      <p className="text-sm ">{feed.author.name}</p>
+                    </div>
+                  </div>
+
                   <p className="text-sm lg:text-base">
                     {convertDate(feed?.createdAt!)}
                   </p>

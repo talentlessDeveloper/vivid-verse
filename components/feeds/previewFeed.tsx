@@ -20,6 +20,7 @@ const PreviewFeed = ({ content, ...feed }: PreviewFeedProps) => {
           className="w-full  object-cover h-52 lg:h-96"
           width="0"
           height="0"
+          unoptimized
         />
         <div className="flex gap-x-2">
           {tags.map((tag, i) => (

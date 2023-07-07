@@ -18,17 +18,18 @@ export const createFeed = async (feed: PreviewFeedProps) => {
       title: feed.title,
       content: feed.content,
       author: {
-        id: currentUser?.uid,
-        name: currentUser?.displayName,
+        id: currentUser?.uid!,
+        name: currentUser?.displayName!,
+        profilePic: currentUser?.photoURL!,
       },
       tags: feed.tags,
       createdAt: serverTimestamp(),
-      imageUrl,
+      imageUrl: imageUrl as string,
     };
 
-    console.log(feedData);
-
-    await addDoc(collectionRef, feedData);
+    if (currentUser) {
+      await addDoc(collectionRef, feedData);
+    }
 
     return { error: null };
   } catch (err: any) {

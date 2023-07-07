@@ -1,4 +1,5 @@
 import { Timestamp } from 'firebase/firestore';
+import { User } from 'firebase/auth';
 
 export type ILogin = {
   email: string;
@@ -14,14 +15,7 @@ export type ISignUp = {
   username: string;
 };
 
-export type UserChatter = {
-  email: string;
-  firstName: string;
-  lastName: string;
-  username: string;
-  profilePic?: string;
-  userid?: string;
-};
+export type MyUser = User;
 
 export type CreateFeed = {
   title: string;
@@ -33,6 +27,7 @@ export type CreateFeed = {
 export type Author = {
   name: string;
   id: string;
+  profilePic?: string;
 };
 
 export type IComment = {
@@ -52,16 +47,21 @@ export type Reaction = {
 };
 
 export type Feed = {
-  id: string;
+  id?: string;
   title: string;
   content: string;
   imageUrl: string;
   createdAt: Timestamp;
   author: Author;
-  comments: IComment[];
+  comments?: IComment[];
   tags: string[];
   reactions?: Reaction;
   bookMarkedBy?: string[];
 };
 
 export type Bookmark = Feed & { userId: string };
+
+export type UpdateProfile = {
+  firstName: string;
+  lastName: string;
+};

@@ -64,7 +64,7 @@ const Comment = ({
     <div className="flex items-start my-4">
       <div className="flex-shrink-0">
         <Image
-          src={currentUser?.photoURL!}
+          src={author.profilePic!}
           alt="avatar"
           className="w-10 aspect-square rounded-full object-cover"
           width={0}

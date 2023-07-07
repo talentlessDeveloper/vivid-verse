@@ -1,23 +1,20 @@
 import Link from 'next/link';
-import React, { useContext, useState } from 'react';
-import { useAuthUser } from '@react-query-firebase/auth';
+import { useEffect, useState } from 'react';
 
+import { useAuth } from '@/hooks/useAuth';
+import Image from 'next/image';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { BsPencil } from 'react-icons/bs';
-import AuthHeaderMenuBtn from './authHeaderMenuBtn';
-import AuthHeaderMenu from './authHeaderMenu';
-import { signOut } from 'firebase/auth';
-import { auth } from '@/firebase/config';
-import { AuthContext } from '@/context/authContext';
-import Image from 'next/image';
-import Loader from '../svg/loader';
-import { useAuth } from '@/hooks/useAuth';
 import NotDeveloped from '../shared/notDeveloped';
+import AuthHeaderMenu from './authHeaderMenu';
+import AuthHeaderMenuBtn from './authHeaderMenuBtn';
+import AuthHeaderModal from './authHeaderModal';
 
 const AuthHeader = () => {
   const [openMenu, setOpenMenu] = useState(false);
   const { user } = useAuth();
   const [modal, setModal] = useState(false);
+  const [authModal, setAuthModal] = useState(false);
 
   const closeModal = () => setModal(false);
   const openModal = () => setModal(true);
@@ -31,12 +28,16 @@ const AuthHeader = () => {
   //   );
   // }
 
+  useEffect(() => {
+    if (authModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [authModal]);
+
   const handleMenu = () => {
     setOpenMenu((p) => !p);
-  };
-
-  const handleLogOut = () => {
-    signOut(auth);
   };
 
   return (
@@ -44,7 +45,7 @@ const AuthHeader = () => {
       <nav className="w-10/12 mx-auto flex items-center justify-between py-4">
         <div className="flex items-center gap-x-3">
           <AuthHeaderMenuBtn openMenu={openMenu} handleMenu={handleMenu} />
-          <Link href="/feeds" className="relative z-30">
+          <Link href="/feeds" className="relative z-30 text-2xl lg:text-4xl">
             𝓥𝓲𝓿𝓲𝓭𝓥𝓮𝓻𝓼𝓮
           </Link>
         </div>
@@ -69,7 +70,7 @@ const AuthHeader = () => {
           <li>
             <Link
               href="/create"
-              className="flex items-center gap-x-2 bg-slate-700 text-slate-50 px-[15px] py-2 rounded-full"
+              className="flex items-center gap-x-2 bg-slate-800 hover:bg-slate-900 transition-colors duration-300 text-slate-50 px-[15px] py-2 rounded-md"
             >
               <div>
                 <span>
@@ -83,7 +84,10 @@ const AuthHeader = () => {
           {user ? (
             <>
               <li>
-                <button className="mt-2">
+                <button
+                  className="mt-2"
+                  onClick={() => setAuthModal((p) => !p)}
+                >
                   <Image
                     src={
                       user.photoURL
@@ -98,14 +102,6 @@ const AuthHeader = () => {
                   />
                 </button>
               </li>
-              <li>
-                <button
-                  className="mt-2 bg-slate-800 hover:bg-slate-900 text-slate-100 px-4 py-1"
-                  onClick={handleLogOut}
-                >
-                  Log Out
-                </button>
-              </li>
             </>
           ) : null}
         </ul>
@@ -113,6 +109,7 @@ const AuthHeader = () => {
 
       <AuthHeaderMenu openMenu={openMenu} />
       {modal ? <NotDeveloped onClose={closeModal} /> : null}
+      {authModal ? <AuthHeaderModal setAuthModal={setAuthModal} /> : null}
     </header>
   );
 };

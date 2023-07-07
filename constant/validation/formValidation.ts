@@ -2,6 +2,11 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { ILogin, ISignUp } from './types';
 
+interface FileWithSize {
+  size: number;
+  // other properties, if applicable
+}
+
 export const loginDefaultValue: ILogin = {
   email: '',
   password: '',
@@ -37,39 +42,9 @@ const registerSchema = yup.object({
 
 export const registerResolver = yupResolver(registerSchema);
 
-// export const feedDefaultValues: IcreateFeeds = {
-//   content: '',
-//   title: '',
-//   image: null,
-//   url: null,
-// };
+const updateProfileSchema = yup.object({
+  firstName: yup.string().required('First Name cannot be empty'),
+  lastName: yup.string().required('Last Name cannot be empty'),
+});
 
-// export const feedsResolver = yupResolver(feedSchema);
-
-// export const feedsResolver: Resolver<IcreateFeeds> = async (values) => {
-//   if (values.image === null && values.url === null) {
-//     throw new Error('Please select either an image or enter a URL');
-//   }
-
-//   return values;
-// };
-
-// const feedsSchema = yup.object({
-//   content: yup.string().required('Content is required'),
-//   title: yup.string().required('Title is required'),
-//   image: yup
-//     .mixed()
-//     .nullable()
-//     .test(
-//       'exclusive-fields',
-//       'Please select either an image or enter a URL',
-//       function (value) {
-//         const urlValue = this.parent.url;
-//         return (
-//           (value !== null && urlValue === null) ||
-//           (value === null && urlValue !== null)
-//         );
-//       }
-//     ),
-//   url: yup.string().url('Invalid URL format').nullable(),
-// });
+export const updateProfileResolver = yupResolver(updateProfileSchema);
