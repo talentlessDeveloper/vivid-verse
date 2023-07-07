@@ -28,7 +28,7 @@ const SingleFeed = ({ feed, setFeeds, feeds }: FeedProp) => {
       setModal(true);
       return;
     }
-    await bookmarksFn(feed.id, user.uid, feeds, setFeeds);
+    await bookmarksFn(feed.id!, user.uid, feeds, setFeeds);
   };
 
   const closeModal = () => setModal(false);
@@ -49,7 +49,7 @@ const SingleFeed = ({ feed, setFeeds, feeds }: FeedProp) => {
         <div className="shadow-md text-lg font-mono py-3 px-2 mt-2 space-y-2">
           <div>
             <Link
-              href={`feed/${encodeURIComponent(feed.id)}`}
+              href={`feed/${encodeURIComponent(feed.id!)}`}
               // href={{
               //   pathname: '/feed/[id]',
               //   query: { slug: feed.id },
@@ -86,7 +86,7 @@ const SingleFeed = ({ feed, setFeeds, feeds }: FeedProp) => {
                     <div className="w-10 h-10 rounded-full border border-solid border-gray-400">
                       <Image
                         alt={feed.author.name}
-                        src={feed.author.profilePic}
+                        src={feed.author.profilePic!}
                         width="0"
                         height="0"
                         className="w-10 h-10 object-cover rounded-full"
@@ -106,7 +106,7 @@ const SingleFeed = ({ feed, setFeeds, feeds }: FeedProp) => {
                 <div className="flex gap-x-3 items-center pr-2 lg:pr-10">
                   {feed.author.id === user?.uid ? (
                     <>
-                      <Link href={`edit/${encodeURIComponent(feed.id)}`}>
+                      <Link href={`edit/${encodeURIComponent(feed.id!)}`}>
                         <AiOutlineEdit />
                       </Link>
                       <button onClick={deleteFeed}>
