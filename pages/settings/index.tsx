@@ -125,83 +125,83 @@ const Page = () => {
   }
 
   return (
-    <AccountLayout>
-      <div>
-        <form
-          className="space-y-6 w-11/12 mx-auto lg:w-9/12 "
-          onSubmit={handleUpdateProfile}
-        >
-          <div>
-            <label htmlFor="firstName" className="text-sm font-bold">
-              userName
-            </label>
-            <input
-              type="text"
-              id="username"
-              value={defaultUser.username}
-              onChange={(e) =>
-                setDefaultUser({
-                  ...defaultUser,
-                  username: e.target.value,
-                })
+    <div>
+      <form
+        className="space-y-6 w-11/12 mx-auto lg:w-9/12 "
+        onSubmit={handleUpdateProfile}
+      >
+        <div>
+          <label htmlFor="firstName" className="text-sm font-bold">
+            userName
+          </label>
+          <input
+            type="text"
+            id="username"
+            value={defaultUser.username}
+            onChange={(e) =>
+              setDefaultUser({
+                ...defaultUser,
+                username: e.target.value,
+              })
+            }
+            className="w-full block mt-1 px-3 py-3 outline outline-1 outline-gray-600 rounded-md"
+          />
+          {error.username ? (
+            <p className="text-red-500 block mt-1">{error.username}</p>
+          ) : null}
+        </div>
+
+        <div className="relative">
+          <input
+            type="file"
+            onChange={(e) => {
+              console.log(e.target.files?.[0]);
+              const file = e.target.files?.[0];
+              if (file) {
+                handleFileChange(file);
               }
-              className="w-full block mt-1 px-3 py-3 outline outline-1 outline-gray-600 rounded-md"
-            />
-            {error.username ? (
-              <p className="text-red-500 block mt-1">{error.username}</p>
-            ) : null}
-          </div>
+            }}
+            className="absolute opacity-0 h-0 w-0"
+            accept="image/*"
+            id="fileInput"
+          />
 
-          <div className="relative">
-            <input
-              type="file"
-              onChange={(e) => {
-                console.log(e.target.files?.[0]);
-                const file = e.target.files?.[0];
-                if (file) {
-                  handleFileChange(file);
+          <label className="cursor-pointer py-2  " htmlFor="fileInput">
+            <span className="text-sm font-bold">Profile Photo</span>
+            <div className="border border-solid border-gray-600 mt-[2px]  flex justify-center items-center rounded-full w-10 h-10 lg:w-20 lg:h-20 ">
+              <Image
+                width="0"
+                height="0"
+                unoptimized
+                className="w-10 h-10 lg:w-20 lg:h-20 rounded-full object-cover  "
+                src={
+                  defaultUser.imageUrl ? defaultUser.imageUrl : (url as string)
                 }
-              }}
-              className="absolute opacity-0 h-0 w-0"
-              accept="image/*"
-              id="fileInput"
-            />
+                alt=""
+              />{' '}
+            </div>
+          </label>
 
-            <label className="cursor-pointer py-2  " htmlFor="fileInput">
-              <span className="text-sm font-bold">Profile Photo</span>
-              <div className="border border-solid border-gray-600 mt-[2px]  flex justify-center items-center rounded-full w-10 h-10 lg:w-20 lg:h-20 ">
-                <Image
-                  width="0"
-                  height="0"
-                  unoptimized
-                  className="w-10 h-10 lg:w-20 lg:h-20 rounded-full object-cover  "
-                  src={
-                    defaultUser.imageUrl
-                      ? defaultUser.imageUrl
-                      : (url as string)
-                  }
-                  alt=""
-                />{' '}
-              </div>
-            </label>
+          {error.url && <p className="text-red-500 mt-1">{error.url}</p>}
+        </div>
 
-            {error.url && <p className="text-red-500 mt-1">{error.url}</p>}
-          </div>
-
-          <button
-            className="bg-blue-500 mt-7 flex items-center justify-center text-white px-8 py-1 hover:bg-blue-900 duration-300 transition-colors"
-            type="submit"
-          >
-            {upload ? <Loader size="w-5 h-5" /> : 'Update'}
-          </button>
-        </form>
-      </div>
-    </AccountLayout>
+        <button
+          className="bg-blue-500 mt-7 flex items-center justify-center text-white px-8 py-1 hover:bg-blue-900 duration-300 transition-colors"
+          type="submit"
+        >
+          {upload ? <Loader size="w-5 h-5" /> : 'Update'}
+        </button>
+      </form>
+    </div>
   );
 };
 
 export default Page;
 
 Page.getLayout = function getLayout(page: ReactElement) {
-  return <VerifiedAuthLayout>{page}</VerifiedAuthLayout>;
+  return (
+    <VerifiedAuthLayout>
+      <AccountLayout>{page}</AccountLayout>
+    </VerifiedAuthLayout>
+  );
 };
